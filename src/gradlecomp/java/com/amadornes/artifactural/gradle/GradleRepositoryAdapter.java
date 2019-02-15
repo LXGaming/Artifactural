@@ -16,6 +16,7 @@ import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.ConfiguredModuleC
 import org.gradle.api.internal.artifacts.repositories.AbstractArtifactRepository;
 import org.gradle.api.internal.artifacts.repositories.DefaultMavenArtifactRepository;
 import org.gradle.api.internal.artifacts.repositories.ResolutionAwareRepository;
+import org.gradle.api.internal.artifacts.repositories.descriptor.RepositoryDescriptor;
 import org.gradle.api.internal.artifacts.repositories.resolver.ExternalResourceArtifactResolver;
 import org.gradle.api.internal.artifacts.repositories.resolver.ExternalResourceResolver;
 import org.gradle.api.internal.artifacts.repositories.resolver.MavenResolver;
@@ -66,6 +67,7 @@ public class GradleRepositoryAdapter extends AbstractArtifactRepository implemen
     private final Repository repository;
 
     private GradleRepositoryAdapter(DefaultMavenArtifactRepository maven, Repository repository) {
+        super(null);
         this.maven = maven;
         this.repository = repository;
     }
@@ -101,6 +103,11 @@ public class GradleRepositoryAdapter extends AbstractArtifactRepository implemen
         ReflectionUtils.alter(artifactResolver, "repository", prev -> repo);
 
         return resolver;
+    }
+
+    @Override
+    public RepositoryDescriptor getDescriptor() {
+        return maven.getDescriptor(); // Proxy to the real repo
     }
 
     private class StreamingRepo implements ExternalResourceRepository {
