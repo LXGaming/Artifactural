@@ -37,6 +37,7 @@ import org.gradle.api.internal.artifacts.ivyservice.resolveengine.artifact.Resol
 import org.gradle.api.internal.artifacts.repositories.AbstractArtifactRepository;
 import org.gradle.api.internal.artifacts.repositories.DefaultMavenLocalArtifactRepository;
 import org.gradle.api.internal.artifacts.repositories.ResolutionAwareRepository;
+import org.gradle.api.internal.artifacts.repositories.descriptor.RepositoryDescriptor;
 import org.gradle.api.internal.artifacts.repositories.resolver.ExternalResourceArtifactResolver;
 import org.gradle.api.internal.artifacts.repositories.resolver.ExternalResourceResolver;
 import org.gradle.api.internal.artifacts.repositories.resolver.MavenResolver;
@@ -97,6 +98,7 @@ public class GradleRepositoryAdapter extends AbstractArtifactRepository implemen
     private final LocatedArtifactCache cache;
 
     private GradleRepositoryAdapter(Repository repository, DefaultMavenLocalArtifactRepository local) {
+        super(null);
         this.repository = repository;
         this.local = local;
         this.root = cleanRoot(local.getUrl());
@@ -180,6 +182,11 @@ public class GradleRepositoryAdapter extends AbstractArtifactRepository implemen
                 };
             }
         };
+    }
+
+    @Override
+    public RepositoryDescriptor getDescriptor() {
+        return local.getDescriptor(); // Proxy to the real repo
     }
 
     private static String cleanRoot(URI uri) {
