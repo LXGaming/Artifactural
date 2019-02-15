@@ -112,7 +112,7 @@ publishing {
                 }
                 url 'http://files.minecraftforge.net/maven/manage/upload'
             } else {
-                url 'file://' + rootProject.file('repo').getAbsolutePath()
+                url project.property("maven.url")
             }
         }
     }
